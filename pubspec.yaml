@@ -1,0 +1,61 @@
+name: calendar
+description: A new Flutter application.
+
+publish_to: 'none' 
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+  firebase_core: 
+  firebase_auth: 
+  intl: ^0.17.0
+  provider: ^5.0.0
+  cloud_firestore: 
+  shared_preferences: ^2.0.5
+  toast: ^0.1.5
+  encrypt: ^5.0.0
+  permission_handler: ^7.1.0
+  syncfusion_flutter_calendar: ^19.1.59
+  image_picker: 
+  image_crop: ^0.3.4 
+  firebase_storage: ^8.1.0
+  firebase_analytics: ^8.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+
+
+  uses-material-design: true
+
+  assets:
+    - assets/icons/
+
+
+  fonts:
+    - family: Raleway
+      fonts:
+        - asset: assets/fonts/Raleway-Regular.ttf
+        - asset: assets/fonts/Raleway-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Raleway-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Raleway-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Raleway-Light.ttf
+          weight: 300
+

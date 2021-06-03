@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "636685562697",
+    "project_id": "calendarlyapp",
+    "storage_bucket": "calendarlyapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636685562697:android:3ad0e061c9034add14e098",
+        "android_client_info": {
+          "package_name": "com.calendarly.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "636685562697-ma86q9i6ii8k45aps0d52s2ehhci1bbn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj39XeqBXkIgUS6BtYOteD03W1r40KJFs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "636685562697-ma86q9i6ii8k45aps0d52s2ehhci1bbn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636685562697:android:8bf533a7be33280114e098",
+        "android_client_info": {
+          "package_name": "com.calendarly.calendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "636685562697-ma86q9i6ii8k45aps0d52s2ehhci1bbn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj39XeqBXkIgUS6BtYOteD03W1r40KJFs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "636685562697-ma86q9i6ii8k45aps0d52s2ehhci1bbn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
