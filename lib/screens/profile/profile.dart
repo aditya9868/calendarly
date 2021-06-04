@@ -2,7 +2,7 @@ import 'package:calendar/index.dart';
 import 'package:calendar/screens/profile/profile-provider.dart';
 import 'package:calendar/utils/custom-datepicker.dart';
 import 'package:calendar/utils/custom-textfield.dart';
-import 'package:calendar/utils/image-crop.dart';
+import 'package:calendar/user-utils/image-crop.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfile extends StatefulWidget {
@@ -28,9 +28,11 @@ class _EditProfileState extends State<EditProfile> {
     startDate = date;
   }
 
+  String url;
+
   bool isLoading = false;
   bool readOnly = false;
-
+  final picker = ImagePicker();
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -48,9 +50,107 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   Center(
                     child: Consumer<ProfileProvider>(
-                      builder: (context, profile, _) => UserAvatarContainer(
-                        imageUrl: profile.url,
-                        showEdit: !readOnly,
+                      builder: (context, profile, _) =>
+                          FutureBuilder<ProfileModel>(
+                        future: profile.getProfile(),
+                        initialData: ProfileModel(),
+                        builder: (context, snapshot) {
+                          url = snapshot.data.url;
+                          return UserAvatarContainer(
+                            imageUrl: snapshot.data.url,
+                            showEdit: !readOnly,
+                            func: () async {
+                              showModalBottomSheet(
+                                backgroundColor: AppColor.transparent,
+                                isScrollControlled: true,
+                                context: context,
+                                builder: (context) => SafeArea(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: AppColor.white,
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(30))),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          width: 50,
+                                          height: 5,
+                                          decoration: BoxDecoration(
+                                              color: AppColor.grey,
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        CustomTextButton(
+                                            text: "Take Photo",
+                                            onPressed: () async {
+                                              // Navigator.pop(context);
+                                              final image =
+                                                  await picker.getImage(
+                                                source: ImageSource.camera,
+                                                preferredCameraDevice:
+                                                    CameraDevice.front,
+                                                imageQuality: 50,
+                                              );
+
+                                              if (image != null) {
+                                                print(image.path);
+                                                await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          ImageCropScreen(
+                                                            imageFile: File(
+                                                                image.path),
+                                                            twicePop: false,
+                                                          ),
+                                                      fullscreenDialog: true),
+                                                );
+
+                                                Navigator.pop(context);
+                                              }
+                                            }),
+                                        CustomTextButton(
+                                            text: "Select From Gallery",
+                                            onPressed: () async {
+                                              final image =
+                                                  await picker.getImage(
+                                                source: ImageSource.gallery,
+                                                imageQuality: 50,
+                                              );
+
+                                              if (image != null) {
+                                                print(image.path);
+                                                await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          ImageCropScreen(
+                                                            imageFile: File(
+                                                                image.path),
+                                                            twicePop: false,
+                                                          ),
+                                                      fullscreenDialog: true),
+                                                );
+                                                Navigator.pop(context);
+                                                // Navigator.pop(context);
+                                              }
+                                            }),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -118,10 +218,15 @@ class _EditProfileState extends State<EditProfile> {
           ),
           CustomButton(
             func: () async {
-              setState(() {
-                readOnly = !readOnly;
-              });
+              // setState(() {
+              //   readOnly = !readOnly;
+              // });
               FocusScope.of(context).unfocus();
+              if (url == null) {
+                CommonWidgets.showToast(context, "Upload Profile Photo",
+                    duration: 2);
+                return;
+              }
               if (first.text == "") {
                 CommonWidgets.showToast(context, "Enter First Name",
                     duration: 2);
@@ -134,17 +239,13 @@ class _EditProfileState extends State<EditProfile> {
                 return;
               }
               if (college.text == "") {
-                CommonWidgets.showToast(context, "Enter Title", duration: 2);
+                CommonWidgets.showToast(context, "Enter College", duration: 2);
                 return;
               }
               if (year.text == "") {
-                CommonWidgets.showToast(context, "Enter Title", duration: 2);
+                CommonWidgets.showToast(context, "Enter Year", duration: 2);
                 return;
               }
-              // if (username.text == "") {
-              //   CommonWidgets.showToast(context, "Enter Title", duration: 2);
-              //   return;
-              // }
 
               setState(() {
                 isLoading = true;
@@ -182,13 +283,14 @@ class _EditProfileState extends State<EditProfile> {
 }
 
 class UserAvatarContainer extends StatelessWidget {
-  final picker = ImagePicker();
   bool showEdit;
   final String imageUrl;
+  final Function func;
   UserAvatarContainer({
     this.showEdit = true,
     Key key,
     this.imageUrl,
+    this.func,
   }) : super(key: key);
 
   @override
@@ -221,21 +323,19 @@ class UserAvatarContainer extends StatelessWidget {
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(140 / 2),
-                child: Consumer<ProfileProvider>(
-                  builder: (context, profile, _) => Container(
-                      alignment: Alignment.center,
-                      child: imageUrl == null
-                          ? Icon(
-                              Icons.person,
-                              size: 83,
-                              color: AppColor.white,
-                            )
-                          : Image.network(
-                              profile.picUrl,
-                              fit: BoxFit.cover,
-                              height: 100,
-                            )),
-                ),
+                child: Container(
+                    alignment: Alignment.center,
+                    child: imageUrl == null
+                        ? Icon(
+                            Icons.person,
+                            size: 83,
+                            color: AppColor.white,
+                          )
+                        : Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            height: 100,
+                          )),
               ),
             ),
           ),
@@ -251,87 +351,7 @@ class UserAvatarContainer extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50 / 2),
                     ),
                     child: InkWell(
-                      onTap: () async {
-                        showModalBottomSheet(
-                          backgroundColor: AppColor.transparent,
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (context) => SafeArea(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: AppColor.white,
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(30))),
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 50,
-                                    height: 5,
-                                    decoration: BoxDecoration(
-                                        color: AppColor.grey,
-                                        borderRadius: BorderRadius.circular(8)),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  CustomTextButton(
-                                      text: "Take Photo",
-                                      onPressed: () async {
-                                        // Navigator.pop(context);
-                                        final image = await picker.getImage(
-                                            source: ImageSource.camera,
-                                            preferredCameraDevice:
-                                                CameraDevice.front);
-
-                                        if (image != null) {
-                                          print(image.path);
-                                          await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        ImageCropScreen(
-                                                          imageFile:
-                                                              File(image.path),
-                                                          twicePop: false,
-                                                        ),
-                                                fullscreenDialog: true),
-                                          );
-                                          Navigator.pop(context);
-                                        }
-                                      }),
-                                  CustomTextButton(
-                                      text: "Select From Gallery",
-                                      onPressed: () async {
-                                        final image = await picker.getImage(
-                                            source: ImageSource.gallery);
-
-                                        if (image != null) {
-                                          print(image.path);
-                                          await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        ImageCropScreen(
-                                                          imageFile:
-                                                              File(image.path),
-                                                          twicePop: false,
-                                                        ),
-                                                fullscreenDialog: true),
-                                          );
-                                          Navigator.pop(context);
-                                          // Navigator.pop(context);
-                                        }
-                                      }),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                      onTap: func,
                       child: Icon(
                         Icons.edit,
                         color: Colors.white,

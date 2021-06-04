@@ -48,10 +48,10 @@ class _ImageCropScreenState extends State<ImageCropScreen> {
   }
 
   Future<void> createData(String url) async {
-    setState(() {
-      Provider.of<ProfileProvider>(context,listen: false).setUrl = url;
-    });
-    
+    final profile = await Provider.of<ProfileProvider>(context, listen: false)
+        .uploadPhoto(url);
+    CommonWidgets.showToast(context, profile.message);
+    await Future.delayed(Duration(seconds: 2));
   }
 
   @override
@@ -131,7 +131,8 @@ class _ImageCropScreenState extends State<ImageCropScreen> {
                           final p = await uploadFile(croppedFile, user);
                           await createData(url);
 
-                          if (Navigator.canPop(context)) Navigator.pop(context,p);
+                          if (Navigator.canPop(context))
+                            Navigator.pop(context, p);
                           if (widget.twicePop && Navigator.canPop(context))
                             Navigator.pop(context);
                         } catch (e) {}

@@ -41,7 +41,7 @@ class ProfileModel {
         codeforces: parsedJson.data()['codeforces'],
         leetCode: parsedJson.data()['leetCode'],
         userName: parsedJson.data()['userName'],
-        url: parsedJson.data()['userName']);
+        url: parsedJson.data()['url']);
   }
 
   Map<String, dynamic> toJson() {

@@ -23,10 +23,9 @@ class ProfileProvider with ChangeNotifier {
     p = p.replaceAll(".", "");
 
     try {
-      await _firebaseFirestore
-          .collection("users")
-          .doc(p)
-          .set(profileModel.toJson());
+      await _firebaseFirestore.collection("users").doc(p).update(
+            profileModel.toJson(),
+          );
 
       return BaseResponse(message: "Event Added", isSuccess: true);
     } on FirebaseAuthException catch (e) {
@@ -34,5 +33,34 @@ class ProfileProvider with ChangeNotifier {
     } catch (e) {}
     return BaseResponse(message: "Error");
   }
+
+  Future<ProfileModel> getProfile() async {
+    String p = cred.userName.replaceAll("@", "");
+    p = p.replaceAll(".", "");
+
+    try {
+      final res = await _firebaseFirestore.collection("users").doc(p).get();
+      return ProfileModel.fromJson(res);
+    } on FirebaseAuthException catch (e) {
+    } catch (e) {}
+    return ProfileModel();
+  }
+
+  Future<BaseResponse> uploadPhoto(String url) async {
+    String p = cred.userName.replaceAll("@", "");
+    p = p.replaceAll(".", "");
+
+    try {
+      await _firebaseFirestore.collection("users").doc(p).set(
+          {"url": url},
+          SetOptions(
+            merge: true,
+          ));
+
+      return BaseResponse(
+          message: "Photo Updated Succesfully", isSuccess: true);
+    } on FirebaseAuthException catch (e) {
+      return BaseResponse(message: e.message);
+    } catch (e) {}
+  }
 }
-//
