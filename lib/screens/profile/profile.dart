@@ -31,7 +31,9 @@ class _EditProfileState extends State<EditProfile> {
   String url;
 
   bool isLoading = false;
+  bool isChecking = false;
   bool readOnly = false;
+  bool isValid = false;
   final picker = ImagePicker();
   @override
   Widget build(BuildContext context) {
@@ -160,6 +162,45 @@ class _EditProfileState extends State<EditProfile> {
                   Row(
                     children: [
                       Expanded(
+                        child: Consumer<ProfileProvider>(
+                          builder: (context, profile, _) => CustomTextField(
+                            hint: "Username*",
+                            controller: username,
+                            readOnly: readOnly,
+                            onchange: (text) async {
+                              if (!isChecking) {
+                                isChecking = true;
+                                if (!CommonWidgets.checkUserName(
+                                    context, text)) {
+                                  setState(() {
+                                    isValid = false;
+                                  });
+                                  isChecking = false;
+                                  return;
+                                }
+                                final res =
+                                    await profile.checkValidUserName(text);
+                                setState(() {
+                                  isValid = res;
+                                });
+                                isChecking = false;
+                              }
+                            },
+                            suffix: username.text == ""
+                                ? Container()
+                                : Icon(
+                                    isValid ? Icons.done : Icons.error_outline,
+                                    color:
+                                        isValid ? AppColor.cyan : AppColor.red,
+                                  ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
                         child: CustomTextField(
                           hint: "First Name*",
                           controller: first,
@@ -227,6 +268,18 @@ class _EditProfileState extends State<EditProfile> {
                     duration: 2);
                 return;
               }
+              if (username.text == "") {
+                CommonWidgets.showToast(context, "Enter Username", duration: 2);
+                return;
+              }
+
+              if (!isValid) {
+                CommonWidgets.showToast(
+                    context, "Username is not valid or it already exists.",
+                    duration: 2);
+                return;
+              }
+
               if (first.text == "") {
                 CommonWidgets.showToast(context, "Enter First Name",
                     duration: 2);
@@ -252,6 +305,7 @@ class _EditProfileState extends State<EditProfile> {
               });
               final profile =
                   Provider.of<ProfileProvider>(context, listen: false);
+              final cred = Provider.of<Credential>(context, listen: false);
               final response = await profile.addProfile(ProfileModel(
                   codechef: codechef.text,
                   codeforces: codeforces.text,
@@ -261,6 +315,8 @@ class _EditProfileState extends State<EditProfile> {
                   last: last.text,
                   leetCode: leet.text,
                   url: profile.url,
+                  userName: username.text,
+                  id: cred.userCredential.id,
                   year: year.text));
               setState(() {
                 isLoading = false;

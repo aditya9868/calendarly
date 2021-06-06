@@ -8,6 +8,8 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final bool isObscure;
   final bool readOnly;
+  final Widget suffix;
+  final Function(String) onchange;
   const CustomTextField({
     Key key,
     this.icon,
@@ -17,6 +19,8 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType,
     this.textAlign = TextAlign.left,
     this.readOnly = false,
+    this.onchange,
+    this.suffix,
   }) : super(key: key);
 
   @override
@@ -33,12 +37,13 @@ class CustomTextField extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
               color: AppColor.grey.withOpacity(0.1)),
           // height: 45,
-          padding: const EdgeInsets.only(right: 35, left: 15),
+          padding: const EdgeInsets.only(right: 15, left: 15),
           child: TextField(
             obscureText: isObscure,
             inputFormatters: [
               LengthLimitingTextInputFormatter(150),
             ],
+            onChanged: onchange,
             maxLines: null,
             readOnly: readOnly,
             cursorColor: AppColor.cyan,
@@ -46,6 +51,12 @@ class CustomTextField extends StatelessWidget {
             controller: controller,
             textAlign: textAlign,
             decoration: InputDecoration(
+              suffixIcon: suffix,
+              // suffixIconConstraints: ,
+              // suffixStyle: ,
+              suffixIconConstraints: BoxConstraints(
+                  maxHeight: 24, maxWidth: 24, minHeight: 24, minWidth: 24),
+              // ,icon: ,
               prefixIcon: icon == null
                   ? null
                   : Icon(

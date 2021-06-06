@@ -10,6 +10,7 @@ class ProfileModel {
   final String leetCode;
   final String userName;
   final String url;
+  final String id;
 
   ProfileModel({
     this.first,
@@ -22,6 +23,7 @@ class ProfileModel {
     this.leetCode,
     this.userName,
     this.url,
+    this.id,
   });
 
   factory ProfileModel.fromJson(DocumentSnapshot<Map<String, dynamic>> parsedJson) {
@@ -41,6 +43,7 @@ class ProfileModel {
         codeforces: parsedJson.data()['codeforces'],
         leetCode: parsedJson.data()['leetCode'],
         userName: parsedJson.data()['userName'],
+        id: parsedJson.data()['id'],
         url: parsedJson.data()['url']);
   }
 
@@ -55,7 +58,7 @@ class ProfileModel {
     data['codeforces'] = codeforces;
     data['leetCode'] = leetCode;
     data['userName'] = userName;
-    data['url'] = url;
+    data['id'] = id;
     return data;
   }
 }

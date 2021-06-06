@@ -115,4 +115,21 @@ class CommonWidgets {
 
     return p;
   }
+
+  static checkUserName(BuildContext context, String phone) {
+    String pattern = r'[!@#<>?":_`~;[\]\\|=+)(*&^%\s-]';
+
+    RegExp regex = new RegExp(pattern);
+    if (phone.length == 0) {
+      FocusScope.of(context).unfocus();
+      showToast(context, "Enter Username", duration: 2);
+      return false;
+    } else if (regex.hasMatch(phone)) {
+      FocusScope.of(context).unfocus();
+      showToast(context, "Username only includes alphabets and numbers", duration: 3);
+      return false;
+    }
+    return true;
+  }
 }
+// ^[A-Za-z-0-99999999'

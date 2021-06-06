@@ -41,8 +41,7 @@ class ProfileProvider with ChangeNotifier {
     try {
       final res = await _firebaseFirestore.collection("users").doc(p).get();
       return ProfileModel.fromJson(res);
-    } on FirebaseAuthException catch (e) {
-    } catch (e) {}
+    } on FirebaseAuthException catch (e) {} catch (e) {}
     return ProfileModel();
   }
 
@@ -52,7 +51,7 @@ class ProfileProvider with ChangeNotifier {
 
     try {
       await _firebaseFirestore.collection("users").doc(p).set(
-          {"url": url},
+          {"url": url, "id": p},
           SetOptions(
             merge: true,
           ));
@@ -62,5 +61,19 @@ class ProfileProvider with ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       return BaseResponse(message: e.message);
     } catch (e) {}
+  }
+
+  Future<bool> checkValidUserName(String p) async {
+    try {
+      final res = await _firebaseFirestore
+          .collection("users")
+          .where("userName", isEqualTo: p)
+          .where("id", isNotEqualTo: cred.userCredential.id)
+          .get();
+      print(p);
+      print(res.docs);
+      if (res.docs.length == 0) return true;
+    } on FirebaseAuthException catch (e) {} catch (e) {}
+    return false;
   }
 }
