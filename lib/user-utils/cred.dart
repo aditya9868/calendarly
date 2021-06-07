@@ -51,7 +51,7 @@ class Credential with ChangeNotifier {
       final rawRes = await _firebaseFirestore.collection("users").doc(p).get();
       userCredential = ProfileModel.fromJson(rawRes);
       if(userCredential.role=="admin")
-       uploadEvents();
+       await uploadEvents();
     } catch (e) {}
     return userCredential;
   }

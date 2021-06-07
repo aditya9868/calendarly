@@ -1,4 +1,5 @@
 import 'package:calendar/index.dart';
+import 'package:calendar/screens/dashboard/dashboard-provider.dart';
 import 'package:calendar/utils/card-chip.dart';
 
 class CardModelView extends StatefulWidget {
@@ -69,7 +70,9 @@ class _CardModelViewState extends State<CardModelView> {
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(32.0),
                               ),
-                              onTap: () async {},
+                              onTap: () async {
+                                showAction(context);
+                              },
                               child: Padding(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Icon(
@@ -156,12 +159,6 @@ class _CardModelViewState extends State<CardModelView> {
                                                           "Description: " +
                                                               widget.item
                                                                   .description)),
-                                              // TextIconRow(
-                                              //   color: color,
-                                              //   head: "Description: ",
-                                              //   text: CommonWidgets.checkNull(
-                                              //       widget.item.description),
-                                              // ),
                                             ],
                                           )
                                         : Container(),
@@ -197,12 +194,47 @@ class _CardModelViewState extends State<CardModelView> {
               color: AppColor.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
           padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [],
+          child: Consumer<Credential>(
+            builder: (context, cred, _) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomTextButton(
+                  text: "Share",
+                  onPressed: () {
+                    CommonWidgets.shareMessage(message());
+                  },
+                ),
+                CustomTextButton(
+                  text: "Add to Calendar",
+                  onPressed: () async {
+                    final dash =
+                        Provider.of<DashboardProvider>(context, listen: false);
+                    final res = await dash.addEvent(widget.item);
+                    CommonWidgets.showToast(context, res.message);
+                    Navigator.pop(context);
+                  },
+                ),
+                widget.item.addedBy == cred.userCredential.userName
+                    ? CustomTextButton(
+                        text: "Delete",
+                        onPressed: () async {
+                          final dash = Provider.of<DashboardProvider>(context,
+                              listen: false);
+                          final res = await dash.deleteEvent(widget.item);
+                          CommonWidgets.showToast(context, res.message);
+                          Navigator.pop(context);
+                        },
+                      )
+                    : Container()
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  String message() {
+    return "${CommonWidgets.checkNull(widget.item.type)}${CommonWidgets.checkValNull("Title: ", widget.item.title)}${CommonWidgets.checkValNull("Starting Time: ", CommonWidgets.convertToFormatedDate(widget.item.startedAt))}${CommonWidgets.checkValNull("Ending Time: ", CommonWidgets.convertToFormatedDate(widget.item.endedAt))}${CommonWidgets.checkNull("\n\n" + widget.item.description)}";
   }
 }

@@ -1,6 +1,6 @@
 import 'package:calendar/index.dart';
-import 'package:calendar/screens/dashboard.dart/card.dart';
-import 'package:calendar/screens/dashboard.dart/dashboard-provider.dart';
+import 'package:calendar/screens/dashboard/card.dart';
+import 'package:calendar/screens/dashboard/dashboard-provider.dart';
 
 class DashBoard extends StatelessWidget {
   const DashBoard({Key key}) : super(key: key);

@@ -1,5 +1,6 @@
 import 'package:calendar/index.dart';
-import 'package:calendar/screens/dashboard.dart/dashboard-provider.dart';
+
+import 'package:calendar/screens/dashboard/dashboard-provider.dart';
 import 'package:calendar/screens/profile/profile-provider.dart';
 import 'package:calendar/screens/profile/profile.dart';
 

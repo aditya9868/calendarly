@@ -1,4 +1,5 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 import 'package:calendar/index.dart';
@@ -112,6 +113,17 @@ class CommonWidgets {
 
     return s;
   }
+  static String convertToFormatedDate(int date) {
+      var s = "";
+
+    try {
+      final p = DateTime.fromMicrosecondsSinceEpoch(date);
+      s = DateFormat('MMM  dd, yyyy hh:mm aaa').format(p);
+    } catch (e) {}
+
+    return s;
+    
+  }
 
   static String checkNull(String p) {
     if (p == null) return "";
@@ -175,15 +187,36 @@ class CommonWidgets {
               return TextSpan(
                 text: e + " ",
                 style: TextStyle(
-                  // color: AppColor.grey,
-                  fontWeight: FontWeight.w200,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w300,
                   fontSize: 13,
                 ),
-                
+
               );
             }
           }).toList()),
     );
+  }
+   static shareMessage(
+    String message,
+  ) async {
+    print(message);
+    try {
+       await FlutterShare.share(
+        title: 'Lead Details',
+        text: message,
+        
+       );
+    } catch (e) {
+      print(e);
+    }
+  }
+  static String checkValNull(String p, String q) {
+
+    if (q == null || q=="") {
+      return "";
+    } else
+      return "\n\n" + p.replaceAll(" ", "\t") + q.replaceAll(" ", "\t");
   }
 }
 // ^[A-Za-z-0-99999999'

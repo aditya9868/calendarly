@@ -54,7 +54,7 @@ export 'package:calendar/screens/calendar/calendar-view-provider.dart';
 export 'package:calendar/screens/add-event/add-event.dart';
 export 'package:calendar/screens/add-event/add-event-provider.dart';
 export 'package:calendar/screens/calendar/calendar-view.dart';
-export 'package:calendar/screens/dashboard.dart/dashboard.dart';
+export 'package:calendar/screens/dashboard/dashboard.dart';
 export 'package:calendar/screens/profile/profile-model.dart';
 
 

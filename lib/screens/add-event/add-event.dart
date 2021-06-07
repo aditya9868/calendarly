@@ -81,10 +81,6 @@ class _AddEventState extends State<AddEvent> {
                   isChecked: isPrivate,
                 ),
                 CustomTextField(
-                  hint: "Url",
-                  controller: url,
-                ),
-                CustomTextField(
                   hint: "Description",
                   controller: des,
                 ),
