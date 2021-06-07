@@ -8,6 +8,7 @@ class CalendarItemModel {
   final bool isfullDay;
   final String description;
   final String addedBy;
+  final String type;
 
   CalendarItemModel(
       {this.startedAt,
@@ -16,7 +17,9 @@ class CalendarItemModel {
       this.colorCode,
       this.isfullDay = false,
       this.description,
-      this.addedBy});
+      this.addedBy,
+      this.type,
+      });
   factory CalendarItemModel.fromJson(QueryDocumentSnapshot<Map<String,dynamic>> parsedJson) {
     return CalendarItemModel(
       startedAt: parsedJson.data()['startedAt'].toInt(),
@@ -25,6 +28,7 @@ class CalendarItemModel {
       isfullDay: parsedJson.data()['isfullDay'],
       description: parsedJson.data()['description'],
       addedBy: parsedJson.data()['addedBy'],
+      type: parsedJson.data()['type'],
     );
   }
 

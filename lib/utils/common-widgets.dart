@@ -1,6 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 import 'package:calendar/index.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CommonWidgets {
   static showToast(BuildContext context, String message, {int duration}) {
@@ -36,7 +38,8 @@ class CommonWidgets {
       0xFF2978b5,
       0xFF0061a8
     ];
-    return p[hexColor.codeUnits[0] % p.length]+2*int.parse(hexColor, radix: 16);
+    return p[hexColor.codeUnits[0] % p.length] +
+        2 * int.parse(hexColor, radix: 16);
   }
 
   static String convertAnyStringToHex(String hexColor) {
@@ -82,7 +85,7 @@ class CommonWidgets {
     String p = "";
     try {
       final date = DateTime.fromMicrosecondsSinceEpoch(t.toInt());
-      p = DateFormat('HH:mm aaa').format(date);
+      p = DateFormat('hh:mm aaa').format(date);
     } catch (e) {}
     return p;
   }
@@ -126,10 +129,61 @@ class CommonWidgets {
       return false;
     } else if (regex.hasMatch(phone)) {
       FocusScope.of(context).unfocus();
-      showToast(context, "Username only includes alphabets and numbers", duration: 3);
+      showToast(context, "Username only includes alphabets and numbers",
+          duration: 3);
       return false;
     }
     return true;
+  }
+
+  static launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {}
+  }
+
+  static RichText getLinkableText(String text) {
+    var urlPattern = r"(https?|http)://?";
+    RegExp regex = new RegExp(urlPattern);
+    List<String> text1;
+    text1 = text.split(" ");
+
+    return RichText(
+      textAlign: TextAlign.left,
+
+      text: new TextSpan(
+          style: TextStyle(
+            // color: AppColor.grey,
+            fontWeight: FontWeight.w300,
+            fontSize: 13,
+          ),
+          children: text1.map((e) {
+            if (regex.hasMatch(e)) {
+              return TextSpan(
+                text: e + " ",
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.w300,
+                  fontSize: 13,
+                ),
+                recognizer: new TapGestureRecognizer()
+                  ..onTap = () {
+                    launch(e);
+                  },
+              );
+            } else {
+              return TextSpan(
+                text: e + " ",
+                style: TextStyle(
+                  // color: AppColor.grey,
+                  fontWeight: FontWeight.w200,
+                  fontSize: 13,
+                ),
+                
+              );
+            }
+          }).toList()),
+    );
   }
 }
 // ^[A-Za-z-0-99999999'

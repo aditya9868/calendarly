@@ -1,4 +1,5 @@
 import 'package:calendar/index.dart';
+import 'package:calendar/utils/card-chip.dart';
 
 class CardModelView extends StatefulWidget {
   CardModelView({Key key, this.item}) : super(key: key);
@@ -19,7 +20,8 @@ class _CardModelViewState extends State<CardModelView> {
   @override
   Widget build(BuildContext context) {
     final color = Color(CommonWidgets.getColorFromHex(
-        CommonWidgets.convertAnyStringToHex(widget.item.title)));
+        CommonWidgets.convertAnyStringToHex(
+            widget.item.type == null ? widget.item.title : widget.item.type)));
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 10),
       child: InkWell(
@@ -123,10 +125,17 @@ class _CardModelViewState extends State<CardModelView> {
                                                     widget.item.endedAt),
                                           ),
                                     //Navigate to profile
-
+                                    widget.item.type == null
+                                        ? Container()
+                                        : CardChip(
+                                            color: color,
+                                            text: widget.item.type,
+                                          ),
                                     isExpanded
                                         ? Column(
                                             mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               widget.item.addedBy == null
                                                   ? Container()
@@ -137,15 +146,28 @@ class _CardModelViewState extends State<CardModelView> {
                                                           .checkNull(widget
                                                               .item.addedBy),
                                                     ),
-                                              TextIconRow(
-                                                color: color,
-                                                head: "Description: ",
-                                                text: CommonWidgets.checkNull(
-                                                    widget.item.description),
-                                              ),
+                                              Container(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 5,
+                                                      vertical: 4),
+                                                  child: CommonWidgets
+                                                      .getLinkableText(
+                                                          "Description: " +
+                                                              widget.item
+                                                                  .description)),
+                                              // TextIconRow(
+                                              //   color: color,
+                                              //   head: "Description: ",
+                                              //   text: CommonWidgets.checkNull(
+                                              //       widget.item.description),
+                                              // ),
                                             ],
                                           )
                                         : Container(),
+                                    SizedBox(
+                                      height: 5,
+                                    )
                                   ],
                                 ),
                               ),

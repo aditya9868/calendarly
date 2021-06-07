@@ -7,7 +7,7 @@ class UserModel {
   String lastName;
   String gender;
   String id;
-
+  String role;
   String userName;
 
   UserModel({
@@ -18,6 +18,7 @@ class UserModel {
     this.dob,
     this.id,
     this.gender,
+    this.role,
   });
 
   factory UserModel.fromJson(
@@ -30,6 +31,7 @@ class UserModel {
       college: parsedJson.data()['college'],
       gender: parsedJson.data()['gender'],
       id: parsedJson.data()['id'],
+      role: parsedJson.data()['role'],
     );
   }
   Map<String, dynamic> toJson() {
@@ -39,7 +41,7 @@ class UserModel {
     data['username'] = userName;
     data['dob'] = dob;
     data['id'] = id;
-
+    data['role'] = role;
     data['college'] = college;
     data['gender'] = gender;
     return data;

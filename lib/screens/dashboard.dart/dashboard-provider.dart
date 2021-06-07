@@ -12,7 +12,7 @@ class DashboardProvider with ChangeNotifier {
     return _firebaseFirestore
         .collection("events")
         .where("startedAt", isGreaterThanOrEqualTo: t)
-        .orderBy("startedAt", descending: true)
+        .orderBy("startedAt",)
         .snapshots()
         .map((QuerySnapshot list) => list.docs.map((QueryDocumentSnapshot d) {
               return CalendarItemModel.fromJson(d);

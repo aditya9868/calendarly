@@ -21,20 +21,7 @@ class DashBoard extends StatelessWidget {
         padding: const EdgeInsets.all(0),
         children: [
           Expanded(
-            child: StreamBuilder<List<CalendarItemModel>>(
-              stream: dash.getEventStream,
-              initialData: [],
-              builder: (context, snapshot) {
-                return ListView(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  children: snapshot.data
-                      .map((e) => CardModelView(
-                            item: e,
-                          ))
-                      .toList(),
-                );
-              },
-            ),
+            child: getEvent(dash),
           ),
         ],
         bottomBar: BottomBar(
@@ -45,5 +32,22 @@ class DashBoard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  StreamBuilder<List<CalendarItemModel>> getEvent(DashboardProvider dash) {
+    return StreamBuilder<List<CalendarItemModel>>(
+            stream: dash.getEventStream,
+            initialData: [],
+            builder: (context, snapshot) {
+              return ListView(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                children: snapshot.data
+                    .map((e) => CardModelView(
+                          item: e,
+                        ))
+                    .toList(),
+              );
+            },
+          );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:calendar/index.dart';
+
 class ProfileModel {
   final String first;
   final String last;
@@ -11,7 +12,7 @@ class ProfileModel {
   final String userName;
   final String url;
   final String id;
-
+  final String role;
   ProfileModel({
     this.first,
     this.last,
@@ -24,9 +25,11 @@ class ProfileModel {
     this.userName,
     this.url,
     this.id,
+    this.role,
   });
 
-  factory ProfileModel.fromJson(DocumentSnapshot<Map<String, dynamic>> parsedJson) {
+  factory ProfileModel.fromJson(
+      DocumentSnapshot<Map<String, dynamic>> parsedJson) {
     DateTime _dob;
     if (parsedJson.data()['dob'] == null) {
       try {
@@ -34,17 +37,19 @@ class ProfileModel {
       } catch (e) {}
     }
     return ProfileModel(
-        first: parsedJson.data()['firstName'],
-        last: parsedJson.data()['lastName'],
-        college: parsedJson.data()['college'],
-        year: parsedJson.data()['year'].toString(),
-        dob: _dob,
-        codechef: parsedJson.data()['codechef'],
-        codeforces: parsedJson.data()['codeforces'],
-        leetCode: parsedJson.data()['leetCode'],
-        userName: parsedJson.data()['userName'],
-        id: parsedJson.data()['id'],
-        url: parsedJson.data()['url']);
+      first: parsedJson.data()['firstName'],
+      last: parsedJson.data()['lastName'],
+      college: parsedJson.data()['college'],
+      year: parsedJson.data()['year'].toString(),
+      dob: _dob,
+      codechef: parsedJson.data()['codechef'],
+      codeforces: parsedJson.data()['codeforces'],
+      leetCode: parsedJson.data()['leetCode'],
+      userName: parsedJson.data()['userName'],
+      id: parsedJson.data()['id'],
+      url: parsedJson.data()['url'],
+      role: parsedJson.data()['role'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -59,6 +64,7 @@ class ProfileModel {
     data['leetCode'] = leetCode;
     data['userName'] = userName;
     data['id'] = id;
+    data['role'] = role;
     return data;
   }
 }
